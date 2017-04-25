@@ -29,9 +29,13 @@ SphereInitializer.prototype.initializePositions = function ( positions, toSpawn)
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
         // for now we just generate a random point in the unit cube; needs to be fixed
-        var pos = new THREE.Vector3( 1.0 - 2.0 * Math.random(),
-                                     1.0 - 2.0 * Math.random(),
-                                     1.0 - 2.0 * Math.random() );
+        var rand1 = 1.0 - 2.0 * Math.random();
+        var rand2 = 1.0 - 2.0 * Math.random();
+        var squareSum = rand1 * rand1 + rand2 * rand2;
+
+        var pos = new THREE.Vector3( 2 * rand1 * Math.sqrt(1 - squareSum),
+                                     2 * rand2 * Math.sqrt(1 - squareSum),
+                                     1 - 2 * (squareSum));
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, positions, pos );
@@ -262,7 +266,37 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
 
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         // ----------- STUDENT CODE BEGIN ------------
+        //https://hbfs.wordpress.com/2010/10/05/random-points-in-a-triangle-generating-random-sequences-ii/
         var p = base_pos;
+        //console.log(mesh)
+        //console.log(mesh.faces)
+        // var randomInt = 
+        // var randomFace = 
+        var faceVertsId = [];
+
+        faceVertsId[0] = mesh.faces[i].a;
+        faceVertsId[1] = mesh.faces[i].b;
+        faceVertsId[2] = mesh.faces[i].c;
+
+        var faceVerts = faceVertsId.map(id => mesh.vertices[id]);
+        //console.log(faceVerts);
+        
+        var basisVecA = (new THREE.Vector3()).subVectors(faceVerts[1], faceVerts[0]);
+        var basisVecB = (new THREE.Vector3()).subVectors(faceVerts[2], faceVerts[0]);
+
+
+        var rand1 = Math.random();
+        var rand2 = Math.random();
+        var sum = rand1 + rand2;
+        while (sum > 1) {
+
+            rand1 = Math.random();
+            rand2 = Math.random();
+            sum = rand1 + rand2;
+        }
+
+       // var p = (basisVecA.multiplyScalar(rand1)).add((basisVecB).multiplyScalar(rand2));
+
 
         setElement( i, positions, p );
         // ----------- STUDENT CODE END ------------
