@@ -29,13 +29,15 @@ SphereInitializer.prototype.initializePositions = function ( positions, toSpawn)
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
         // for now we just generate a random point in the unit cube; needs to be fixed
-        var rand1 = 1.0 - 2.0 * Math.random();
-        var rand2 = 1.0 - 2.0 * Math.random();
-        var squareSum = rand1 * rand1 + rand2 * rand2;
+        // generate 3 random numbers: [-1,1]
+        var rand1 = 1.0 - 2.0 * ( Math.random() );
+        var rand2 = 1.0 - 2.0 * ( Math.random() );
+        var rand3 = 1.0 - 2.0 * ( Math.random() );
+        var squareSum = ( 2.0 / 3.0 ) * ( rand1 * rand1 + rand2 * rand2 + rand3 * rand3 );
 
         var pos = new THREE.Vector3( 2 * rand1 * Math.sqrt(1 - squareSum),
                                      2 * rand2 * Math.sqrt(1 - squareSum),
-                                     1 - 2 * (squareSum));
+                                     2 * rand3 * Math.sqrt(1 - squareSum));
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, positions, pos );
@@ -79,7 +81,7 @@ SphereInitializer.prototype.initializeSizes = function ( sizes, toSpawn ) {
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
-        var size = this._opts.size;
+        var size = this._opts.size * 0.1;
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, sizes, size );
@@ -106,13 +108,9 @@ SphereInitializer.prototype.initialize = function ( particleAttributes, toSpawn 
 
     // update required values
     this.initializePositions( particleAttributes.position, toSpawn );
-
     this.initializeVelocities( particleAttributes.velocity, particleAttributes.position, toSpawn );
-
     this.initializeColors( particleAttributes.color, toSpawn );
-
     this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
-
     this.initializeSizes( particleAttributes.size, toSpawn );
 };
 
@@ -135,9 +133,14 @@ FountainInitializer.prototype.initializePositions = function ( positions, toSpaw
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
 
-        var pos = new THREE.Vector3( 1.0 - 2.0 * Math.random(),
-                                     1.0 - 2.0 * Math.random(),
-                                     1.0 - 2.0 * Math.random() );
+        var rand1 = 1.0 - 2.0 * ( Math.random() );
+        var rand2 = 1.0 - 2.0 * ( Math.random() );
+        var rand3 = 1.0 - 2.0 * ( Math.random() );
+        var squareSum = ( 2.0 / 3.0 ) * ( rand1 * rand1 + rand2 * rand2 + rand3 * rand3 );
+
+        var pos = new THREE.Vector3( 2 * rand1 * Math.sqrt(1 - squareSum),
+                                     2 * rand2 * Math.sqrt(1 - squareSum),
+                                     2 * rand3 * Math.sqrt(1 - squareSum));
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, positions, pos );
@@ -177,7 +180,7 @@ FountainInitializer.prototype.initializeSizes = function ( sizes, toSpawn ) {
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
-        var size = this._opts.size;
+        var size = this._opts.size * 0.1;
 
         // ----------- STUDENT CODE END ------------
         setElement( idx, sizes, size );
@@ -203,13 +206,9 @@ FountainInitializer.prototype.initialize = function ( particleAttributes, toSpaw
 
     // update required values
     this.initializePositions( particleAttributes.position, toSpawn );
-
     this.initializeVelocities( particleAttributes.velocity, particleAttributes.position, toSpawn );
-
     this.initializeColors( particleAttributes.color, toSpawn );
-
     this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
-
     this.initializeSizes( particleAttributes.size, toSpawn );
 };
 
@@ -270,8 +269,8 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
         var p = base_pos;
         //console.log(mesh)
         //console.log(mesh.faces)
-        // var randomInt = 
-        // var randomFace = 
+        // var randomInt =
+        // var randomFace =
         var faceVertsId = [];
 
         faceVertsId[0] = mesh.faces[i].a;
@@ -280,7 +279,7 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
 
         var faceVerts = faceVertsId.map(id => mesh.vertices[id]);
         //console.log(faceVerts);
-        
+
         var basisVecA = (new THREE.Vector3()).subVectors(faceVerts[1], faceVerts[0]);
         var basisVecB = (new THREE.Vector3()).subVectors(faceVerts[2], faceVerts[0]);
 
@@ -365,13 +364,9 @@ AnimationInitializer.prototype.initialize = function ( particleAttributes, toSpa
 
     // update required values
     this.initializePositions( particleAttributes.position, toSpawn, mesh );
-
     this.initializeVelocities( particleAttributes.velocity, toSpawn );
-
     this.initializeColors( particleAttributes.color, toSpawn );
-
     this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
-
     this.initializeSizes( particleAttributes.size, toSpawn );
 
 };
@@ -439,13 +434,9 @@ ClothInitializer.prototype.initialize = function ( particleAttributes, toSpawn, 
 
     // update required values
     this.initializePositions( particleAttributes.position, toSpawn, width, height );
-
     this.initializeVelocities( particleAttributes.velocity, toSpawn );
-
     this.initializeColors( particleAttributes.color, toSpawn );
-
     this.initializeLifetimes( particleAttributes.lifetime, toSpawn );
-
     this.initializeSizes( particleAttributes.size, toSpawn );
 
     // mark normals to be updated
