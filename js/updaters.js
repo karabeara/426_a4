@@ -10,7 +10,7 @@
 var Collisions = Collisions || {};
 
 
-Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane,damping ) {
+Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane, damping ) {
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
 
@@ -27,15 +27,20 @@ Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane,da
     }
 };
 
-Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane  ) {
+Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane ) {
     var positions   = particleAttributes.position;
+    var velocities  = particleAttributes.velocity;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
         if ( !alive[i] ) continue;
         // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
+        var vel = getElement( i, velocities );
 
+
+        setElement( i, positions, pos );
+        setElement( i, velocities, vel );
         // ----------- STUDENT CODE END ------------
     }
 };
@@ -105,7 +110,29 @@ EulerUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
         // ----------- STUDENT CODE BEGIN ------------
         var p = getElement( i, positions );
         var v = getElement( i, velocities );
+
         // now update velocity based on forces...
+        v.add( gravity.clone().multiplyScalar( delta_t ) );
+
+        if ( attractors[0] !== undefined ) {
+          for ( var j = 0 ; j < attractors.length ; ++j ) {
+
+            var xToAttractor = attractors[j].center.x - Math.abs( p.x );
+            var yToAttractor = attractors[j].center.y - Math.abs( p.y );
+            var zToAttractor = attractors[j].center.z - Math.abs( p.z );
+
+            var dirVector = new THREE.Vector3( xToAttractor,
+                                               yToAttractor,
+                                               zToAttractor);
+
+            var distToAttractor = Math.sqrt( Math.pow( xToAttractor, 2 ) +
+                                             Math.pow( yToAttractor, 2 ) +
+                                             Math.pow( zToAttractor, 2 ) );
+
+            var distInverseSquare = 1000.0 / Math.pow( distToAttractor, 2 );
+            v.add( dirVector.clone().multiplyScalar( distInverseSquare ).multiplyScalar( delta_t ) );
+          }
+        }
 
         setElement( i, velocities, v );
         // ----------- STUDENT CODE END ------------
@@ -251,7 +278,13 @@ ClothUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
             var p = getElement( idx, positions );
             var v = getElement( idx, velocities );
 
-            // calculate forces on this node from neighboring springs 
+            // calculate forces on this node from neighboring springs
+            // (using this.calcHooke()... )
+            v.add( gravity.clone().multiplyScalar( delta_t ) );
+            // var q = getGridElement(...);
+            // console.log("q 1: ", q)
+            // console.log("CH" , this.calcHooke(p, q))
+            // console.log("q again: ", q)
             // (using this.calcHooke()... )
 
             setElement( idx, velocities, v );

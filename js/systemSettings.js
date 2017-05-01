@@ -72,7 +72,7 @@ SystemSettings.fountainBounce = {
     initializerSettings : {
         sphere:   new THREE.Vector4 ( 0.0, 30.0, 0.0, 1.0 ),
         color:    new THREE.Vector4 ( 0.0, 0.0, 1.0, 1.0 ),
-        velocity: new THREE.Vector3 ( 0.0, 30.0, 0.0),
+        velocity: new THREE.Vector3 ( 0.0, 30.0, 0.0 ),
         lifetime: 7,
         size:     5.0,
     },
@@ -81,7 +81,7 @@ SystemSettings.fountainBounce = {
     updaterFunction : EulerUpdater,
     updaterSettings : {
         externalForces : {
-            gravity :     new THREE.Vector3( 0, -20, 0),
+            gravity :     new THREE.Vector3( 0, -10, 0),
             attractors : [],
         },
         collidables: {
@@ -129,7 +129,7 @@ SystemSettings.fountainSink = {
     updaterFunction : EulerUpdater,
     updaterSettings : {
         externalForces : {
-            gravity :     new THREE.Vector3( 0, -20, 0),
+            gravity :     new THREE.Vector3( 0, -10, 0),
             attractors : [],
         },
         collidables: {
@@ -182,7 +182,7 @@ SystemSettings.attractor = {
     updaterSettings : {
         externalForces : {
             gravity :     new THREE.Vector3( 0, 0, 0),
-            attractors : [ new THREE.Sphere( new THREE.Vector3(30.0, 30.0, 30.0), 15.0 ) ],
+            attractors : [ new THREE.Sphere( new THREE.Vector3(30.0, 30.0, 30.0), 15.0 )],
         },
         collidables: {},
     },
