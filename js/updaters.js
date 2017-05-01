@@ -333,13 +333,14 @@ ClothUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
     var gravity = this._opts.externalForces.gravity;
     var attractors = this._opts.externalForces.attractors;
 
-    for ( var j = 0 ; j < height ; ++j ) {
+    for ( var j = 0 ; j < height; ++j ) {
         for ( var i = 0 ; i < width ; ++i ) {
+
             var idx    = j * width + i;
-            var idx_q1 = j * width + ( i + 1 );
-            var idx_q2 = j * width + ( i - 1 );
-            var idx_q3 = ( j + 1 ) * width + i;
-            var idx_q4 = ( j - 1 ) * width + i;
+            var idx_q1 = j * width + ( i - 1 );
+            var idx_q2 = j * width + ( i + 1 );
+            var idx_q3 = ( j - 1 ) * width + i;
+            var idx_q4 = ( j + 1 ) * width + i;
 
             // ----------- STUDENT CODE BEGIN ------------
             var p  = getElement( idx, positions );
@@ -349,21 +350,13 @@ ClothUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
             var q4 = getElement( idx_q4, positions );
             var v  = getElement( idx, velocities );
 
-            // calculate forces on this node from neighboring springs
-            // (using this.calcHooke()... )
             v.add( gravity.clone().multiplyScalar( delta_t ) );
 
-            // Calculate position of neighbors
-            // var p  = getGridElement( i, j, width, velocities );
-            // var q1 = getGridElement( i - 1, j, width, velocities );
-            // var q2 = getGridElement( i + 1, j, width, velocities );
-            // var q3 = getGridElement( i, j - 1, width, velocities );
-            // var q4 = getGridElement( i, j + 1, width, velocities );
-
-            v.add( this.calcHooke( p, q1 ).clone() );
-            v.add( this.calcHooke( p, q2 ).clone() );
-            v.add( this.calcHooke( p, q3 ).clone() );
-            v.add( this.calcHooke( p, q4 ).clone() );
+            // Calculate forces on this node from neighboring springs
+            if ( i > 0 )          { v.add( this.calcHooke( p, q1 ).clone() ); }
+            if ( i < width - 1 )  { v.add( this.calcHooke( p, q2 ).clone() ); }
+            if ( j > 0 )          { v.add( this.calcHooke( p, q3 ).clone() ); }
+            if ( j < height - 1 ) { v.add( this.calcHooke( p, q4 ).clone() ); }
 
             setElement( idx, velocities, v );
             // ----------- STUDENT CODE END ------------
