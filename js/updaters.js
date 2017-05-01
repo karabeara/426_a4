@@ -81,11 +81,14 @@ Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere,
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
 
-        console.log( pos );
+        console.log(pos);
+        console.log(sphere)
+        assert(false)
 
         if ( pos.x === sphere.x ) {
           vel = 0;
         }
+
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );

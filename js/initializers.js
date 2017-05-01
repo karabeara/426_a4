@@ -297,8 +297,10 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
             sum = rand1 + rand2;
         }
 
-       // var p = (basisVecA.multiplyScalar(rand1)).add((basisVecB).multiplyScalar(rand2));
-
+        var vecFromOrigin = (basisVecA.multiplyScalar(rand1)).add((basisVecB).multiplyScalar(rand2));
+        var p = vecFromOrigin.add(faceVerts[0]);
+        p.multiply(mesh.scale);
+        
 
         setElement( i, positions, p );
         // ----------- STUDENT CODE END ------------
