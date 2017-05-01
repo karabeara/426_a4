@@ -70,6 +70,27 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane ) {
     }
 };
 
+
+function _isPointInsideSphere (sphere, pos) {
+
+    var squaredDist = pos.x * pos.x + pos.y * pos.y + pos.z * pos.z;
+    if (squaredDist < sphere.w * sphere.w) {
+        return true;
+    }
+    else
+        return false;
+}
+
+function _getCorrectPosForPointInSphere(sphere, pos) {
+
+    var correctPosition =  pos.clone();
+    correctPosition.sub(sphere);
+    correctPosition.normalize();
+    correctPosition.multiplyScalar(sphere.w);
+    correctPosition.add(sphere);
+    console.log(correctPosition);
+    return correctPosition
+}
 Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere, damping ) {
     var positions    = particleAttributes.position;
     var velocities   = particleAttributes.velocity;
@@ -80,14 +101,20 @@ Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere,
         // ----------- STUDENT CODE BEGIN ------------
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
-
+        var radius = sphere.w;
         console.log(pos);
         console.log(sphere)
-        assert(false)
-
-        if ( pos.x === sphere.x ) {
-          vel = 0;
+       // assert(false)
+        if (_isPointInsideSphere(sphere, pos)) {
+            pos = _getCorrectPosForPointInSphere(sphere, pos);
+            vel = 0;
         }
+
+        
+
+        // if ( pos.x === sphere.x ) {
+        //   vel = 0;
+        // }
 
 
         setElement( i, positions, pos );

@@ -266,7 +266,7 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
 
     var base_pos = this._opts.position;
 
-    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
+    for ( var i = 0 ; i < mesh.faces.length ; ++i ) {
         // ----------- STUDENT CODE BEGIN ------------
         //https://hbfs.wordpress.com/2010/10/05/random-points-in-a-triangle-generating-random-sequences-ii/
         var p = base_pos;
