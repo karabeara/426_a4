@@ -11,36 +11,61 @@ var Collisions = Collisions || {};
 
 
 Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane, damping ) {
-    var positions    = particleAttributes.position;
-    var velocities   = particleAttributes.velocity;
+    var positions  = particleAttributes.position;
+    var velocities = particleAttributes.velocity;
+    var lifetimes  = particleAttributes.lifetime;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
         if ( !alive[i] ) continue;
         // ----------- STUDENT CODE BEGIN ------------
-        var pos = getElement( i, positions );
-        var vel = getElement( i, velocities );
+        var pos  = getElement( i, positions );
+        var vel  = getElement( i, velocities );
+        var life = getElement( i, lifetimes );
 
-        setElement( i, positions, pos );
+        var currPlane = pos.x;
+        if ( plane.y === 1 ) { currPlane = pos.y; }
+        if ( plane.z === 1 ) { currPlane = pos.z; }
+
+        if ( currPlane <= 0.1 ) {
+          vel.x = vel.x * 5;
+          vel.y = vel.y * -0.8;
+          vel.z = vel.z * 5;
+        }
+
+        if ( currPlane <= 0.0 ) {
+          life = -1.0;
+        }
+        // else if ( pos.y <= 0 && collidedPlane === 1.0) {
+        //   collidedPlane = 2.0;
+        // }
+        // else if ( pos.y <= 0 ) {
+        //   collidedPlane = 0.0;
+        // }
+
         setElement( i, velocities, vel );
+        setElement( i, lifetimes, life );
         // ----------- STUDENT CODE END ------------
     }
 };
 
 Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane ) {
     var positions   = particleAttributes.position;
-    var velocities  = particleAttributes.velocity;
+    var lifetimes   = particleAttributes.lifetime;
 
     for ( var i = 0 ; i < alive.length ; ++i ) {
 
         if ( !alive[i] ) continue;
         // ----------- STUDENT CODE BEGIN ------------
-        var pos = getElement( i, positions );
-        var vel = getElement( i, velocities );
+        var pos  = getElement( i, positions );
+        var life = getElement( i, lifetimes );
 
+        if ( pos.y <= 0.0 ) {
+          life = -1.0;
+        }
 
         setElement( i, positions, pos );
-        setElement( i, velocities, vel );
+        setElement( i, lifetimes, life );
         // ----------- STUDENT CODE END ------------
     }
 };
@@ -56,6 +81,11 @@ Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere,
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
 
+        console.log( pos );
+
+        if ( pos.x === sphere.x ) {
+          vel = 0;
+        }
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
@@ -247,6 +277,8 @@ ClothUpdater.prototype.calcHooke = function ( p, q ) {
     var k_s = this._k_s;
     var rest_len = this._s;
 
+
+
     return THREE.Vector3();
     // ----------- STUDENT CODE END ------------
 }
@@ -281,6 +313,7 @@ ClothUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
             // calculate forces on this node from neighboring springs
             // (using this.calcHooke()... )
             v.add( gravity.clone().multiplyScalar( delta_t ) );
+
             // var q = getGridElement(...);
             // console.log("q 1: ", q)
             // console.log("CH" , this.calcHooke(p, q))
