@@ -36,12 +36,6 @@ Collisions.BouncePlane = function ( particleAttributes, alive, delta_t, plane, d
         if ( currPlane <= 0.0 ) {
           life = -1.0;
         }
-        // else if ( pos.y <= 0 && collidedPlane === 1.0) {
-        //   collidedPlane = 2.0;
-        // }
-        // else if ( pos.y <= 0 ) {
-        //   collidedPlane = 0.0;
-        // }
 
         setElement( i, velocities, vel );
         setElement( i, lifetimes, life );
@@ -60,7 +54,11 @@ Collisions.SinkPlane = function ( particleAttributes, alive, delta_t, plane ) {
         var pos  = getElement( i, positions );
         var life = getElement( i, lifetimes );
 
-        if ( pos.y <= 0.0 ) {
+        var currPlane = pos.x;
+        if ( plane.y === 1 ) { currPlane = pos.y; }
+        if ( plane.z === 1 ) { currPlane = pos.z; }
+
+        if ( currPlane <= 0.0 ) {
           life = -1.0;
         }
 
@@ -184,7 +182,7 @@ EulerUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
             var dirVector = new THREE.Vector3( xToAttractor,
                                                yToAttractor,
                                                zToAttractor);
-
+                                               
             var distToAttractor = Math.sqrt( Math.pow( xToAttractor, 2 ) +
                                              Math.pow( yToAttractor, 2 ) +
                                              Math.pow( zToAttractor, 2 ) );
