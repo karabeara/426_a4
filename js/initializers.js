@@ -265,15 +265,11 @@ AnimationInitializer.prototype.getMorphedMesh = function () {
 AnimationInitializer.prototype.initializePositions = function ( positions, toSpawn, mesh ) {
 
     var base_pos = this._opts.position;
-
+    
     for ( var i = 0 ; i < mesh.faces.length ; ++i ) {
         // ----------- STUDENT CODE BEGIN ------------
-        //https://hbfs.wordpress.com/2010/10/05/random-points-in-a-triangle-generating-random-sequences-ii/
+        // Adapted from https://hbfs.wordpress.com/2010/10/05/random-points-in-a-triangle-generating-random-sequences-ii/
         var p = base_pos;
-        //console.log(mesh)
-        //console.log(mesh.faces)
-        // var randomInt =
-        // var randomFace =
         var faceVertsId = [];
 
         faceVertsId[0] = mesh.faces[i].a;
@@ -281,17 +277,15 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
         faceVertsId[2] = mesh.faces[i].c;
 
         var faceVerts = faceVertsId.map(id => mesh.vertices[id]);
-        //console.log(faceVerts);
 
         var basisVecA = (new THREE.Vector3()).subVectors(faceVerts[1], faceVerts[0]);
         var basisVecB = (new THREE.Vector3()).subVectors(faceVerts[2], faceVerts[0]);
 
-
         var rand1 = Math.random();
         var rand2 = Math.random();
         var sum = rand1 + rand2;
-        while (sum > 1) {
 
+        while (sum > 1) {
             rand1 = Math.random();
             rand2 = Math.random();
             sum = rand1 + rand2;
@@ -300,7 +294,7 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
         var vecFromOrigin = (basisVecA.multiplyScalar(rand1)).add((basisVecB).multiplyScalar(rand2));
         var p = vecFromOrigin.add(faceVerts[0]);
         p.multiply(mesh.scale);
-        
+
 
         setElement( i, positions, p );
         // ----------- STUDENT CODE END ------------
@@ -342,7 +336,7 @@ AnimationInitializer.prototype.initializeSizes = function ( sizes, toSpawn) {
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
 
-        setElement( idx, sizes, this._opts.size );
+        setElement( idx, sizes, this._opts.size * 0.1);
         // ----------- STUDENT CODE END ------------
     }
     sizes.needUpdate = true;

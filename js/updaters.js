@@ -86,7 +86,7 @@ function _getCorrectPosForPointInSphere(sphere, pos) {
     correctPosition.normalize();
     correctPosition.multiplyScalar(sphere.w);
     correctPosition.add(sphere);
-    console.log(correctPosition);
+    // console.log(correctPosition);
     return correctPosition
 }
 Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere, damping ) {
@@ -100,20 +100,13 @@ Collisions.BounceSphere = function ( particleAttributes, alive, delta_t, sphere,
         var pos = getElement( i, positions );
         var vel = getElement( i, velocities );
         var radius = sphere.w;
-        console.log(pos);
-        console.log(sphere)
+        // console.log(pos);
+        // console.log(sphere)
        // assert(false)
         if (_isPointInsideSphere(sphere, pos)) {
             pos = _getCorrectPosForPointInSphere(sphere, pos);
             vel = 0;
         }
-
-        
-
-        // if ( pos.x === sphere.x ) {
-        //   vel = 0;
-        // }
-
 
         setElement( i, positions, pos );
         setElement( i, velocities, vel );
@@ -182,7 +175,7 @@ EulerUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
             var dirVector = new THREE.Vector3( xToAttractor,
                                                yToAttractor,
                                                zToAttractor);
-                                               
+
             var distToAttractor = Math.sqrt( Math.pow( xToAttractor, 2 ) +
                                              Math.pow( yToAttractor, 2 ) +
                                              Math.pow( zToAttractor, 2 ) );
@@ -305,9 +298,19 @@ ClothUpdater.prototype.calcHooke = function ( p, q ) {
     var k_s = this._k_s;
     var rest_len = this._s;
 
+    var dist = Math.abs( p.distanceTo(q) );
+    var D = new THREE.Vector3( );
+    D.subVectors( q, p );
+    D.divideScalar( dist );
+    // console.log("p", p);
+    // console.log("q", q);
+    // console.log("dist", dist);
+    // console.log("D", D);
 
+    var hookeForce = new THREE.Vector3();
+    hookeForce = D.multiplyScalar( k_s * ( dist - rest_len ) );
 
-    return THREE.Vector3();
+    return hookeForce;
     // ----------- STUDENT CODE END ------------
 }
 
@@ -330,23 +333,37 @@ ClothUpdater.prototype.updateVelocities = function ( particleAttributes, alive, 
     var gravity = this._opts.externalForces.gravity;
     var attractors = this._opts.externalForces.attractors;
 
-    for ( var j = 0 ; j < height; ++j ) {
+    for ( var j = 0 ; j < height ; ++j ) {
         for ( var i = 0 ; i < width ; ++i ) {
-            var idx = j * width + i;
+            var idx    = j * width + i;
+            var idx_q1 = j * width + ( i + 1 );
+            var idx_q2 = j * width + ( i - 1 );
+            var idx_q3 = ( j + 1 ) * width + i;
+            var idx_q4 = ( j - 1 ) * width + i;
 
             // ----------- STUDENT CODE BEGIN ------------
-            var p = getElement( idx, positions );
-            var v = getElement( idx, velocities );
+            var p  = getElement( idx, positions );
+            var q1 = getElement( idx_q1, positions );
+            var q2 = getElement( idx_q2, positions );
+            var q3 = getElement( idx_q3, positions );
+            var q4 = getElement( idx_q4, positions );
+            var v  = getElement( idx, velocities );
 
             // calculate forces on this node from neighboring springs
             // (using this.calcHooke()... )
             v.add( gravity.clone().multiplyScalar( delta_t ) );
 
-            // var q = getGridElement(...);
-            // console.log("q 1: ", q)
-            // console.log("CH" , this.calcHooke(p, q))
-            // console.log("q again: ", q)
-            // (using this.calcHooke()... )
+            // Calculate position of neighbors
+            // var p  = getGridElement( i, j, width, velocities );
+            // var q1 = getGridElement( i - 1, j, width, velocities );
+            // var q2 = getGridElement( i + 1, j, width, velocities );
+            // var q3 = getGridElement( i, j - 1, width, velocities );
+            // var q4 = getGridElement( i, j + 1, width, velocities );
+
+            v.add( this.calcHooke( p, q1 ).clone() );
+            v.add( this.calcHooke( p, q2 ).clone() );
+            v.add( this.calcHooke( p, q3 ).clone() );
+            v.add( this.calcHooke( p, q4 ).clone() );
 
             setElement( idx, velocities, v );
             // ----------- STUDENT CODE END ------------
