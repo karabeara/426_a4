@@ -278,9 +278,9 @@ AnimationInitializer.prototype.initializePositions = function ( positions, toSpa
         faceVertsId[1] = mesh.faces[face_index].b;
         faceVertsId[2] = mesh.faces[face_index].c;
 
-        console.log("a", faceVertsId[0]);
-        console.log("b", faceVertsId[1]);
-        console.log("c", faceVertsId[2]);
+        // console.log("a", faceVertsId[0]);
+        // console.log("b", faceVertsId[1]);
+        // console.log("c", faceVertsId[2]);
 
         var faceVerts = faceVertsId.map(id => mesh.vertices[id]);
 

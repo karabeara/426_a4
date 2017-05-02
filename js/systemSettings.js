@@ -312,20 +312,73 @@ SystemSettings.cloth = {
 
 SystemSettings.mySystem = {
 
+    // // Particle Material
+    // particleMaterial :  SystemSettings.standardMaterial,
+    //
+    // // Initializer
+    // initializerFunction : VoidInitializer,
+    // initializerSettings : {},
+    //
+    // // Updater
+    // updaterFunction : VoidUpdater,
+    // updaterSettings : {},
+    //
+    // // Scene
+    // maxParticles:  1000,
+    // particlesFreq: 1000,
+    // createScene : function () {},
+
+
+
     // Particle Material
     particleMaterial :  SystemSettings.standardMaterial,
 
     // Initializer
-    initializerFunction : VoidInitializer,
-    initializerSettings : {},
+    initializerFunction : AnimationInitializer,
+    initializerSettings : {
+        position: new THREE.Vector3 ( 0.0, 60.0, 0.0),
+        color:    new THREE.Vector4 ( 1.0, 1.0, 1.0, 1.0 ),
+        velocity: new THREE.Vector3 ( 0.0, 0.0, 0.0),
+        lifetime: 1.25,
+        size:     10.0,
+    },
 
     // Updater
-    updaterFunction : VoidUpdater,
-    updaterSettings : {},
+    updaterFunction : EulerUpdater,
+    updaterSettings : {
+        externalForces : {
+            gravity :     new THREE.Vector3( 0, 0, 0),
+            attractors : [],
+        },
+        collidables: {
+            sinkPlanes : [ { plane : new THREE.Vector4( 0, 1, 0, 0 ) } ],
+        },
+    },
 
     // Scene
-    maxParticles:  1000,
-    particlesFreq: 1000,
-    createScene : function () {},
+    maxParticles:  20000,
+    particlesFreq: 10000,
+    createScene : function () {
+        var plane_geo = new THREE.PlaneBufferGeometry( 1000, 1000, 1, 1 );
+        var phong     = new THREE.MeshPhongMaterial( {color: 0x444444, emissive:0x444444, side: THREE.DoubleSide } );
+        var plane = new THREE.Mesh( plane_geo, phong );
+        plane.rotation.x = -1.57;
+        plane.position.y = -20;
+
+        Scene.addObject( plane );
+    },
+
+    // Animation
+    animatedModelName: "animated_models/stork.js",
+    animationLoadFunction : function( geometry ) {
+
+        mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0x606060, morphTargets: true, transparent:true, opacity:0.5 } ) );
+        mesh.scale.set( 5, 5, 5 );
+        mesh.position.set( 0.0, 400.0, 0.0 );
+        Scene.addObject( mesh );
+        ParticleEngine.addMesh( mesh );
+
+        ParticleEngine.addAnimation( new THREE.MorphAnimation( mesh ) );
+    },
 
 };
