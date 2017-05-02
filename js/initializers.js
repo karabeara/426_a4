@@ -265,16 +265,22 @@ AnimationInitializer.prototype.getMorphedMesh = function () {
 AnimationInitializer.prototype.initializePositions = function ( positions, toSpawn, mesh ) {
 
     var base_pos = this._opts.position;
-    
-    for ( var i = 0 ; i < mesh.faces.length ; ++i ) {
+
+    for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         // ----------- STUDENT CODE BEGIN ------------
         // Adapted from https://hbfs.wordpress.com/2010/10/05/random-points-in-a-triangle-generating-random-sequences-ii/
         var p = base_pos;
         var faceVertsId = [];
 
-        faceVertsId[0] = mesh.faces[i].a;
-        faceVertsId[1] = mesh.faces[i].b;
-        faceVertsId[2] = mesh.faces[i].c;
+        var face_index = Math.floor( mesh.faces.length * Math.random() );
+
+        faceVertsId[0] = mesh.faces[face_index].a;
+        faceVertsId[1] = mesh.faces[face_index].b;
+        faceVertsId[2] = mesh.faces[face_index].c;
+
+        console.log("a", faceVertsId[0]);
+        console.log("b", faceVertsId[1]);
+        console.log("c", faceVertsId[2]);
 
         var faceVerts = faceVertsId.map(id => mesh.vertices[id]);
 
@@ -309,7 +315,7 @@ AnimationInitializer.prototype.initializeVelocities = function ( velocities, toS
     for ( var i = 0 ; i < toSpawn.length ; ++i ) {
         var idx = toSpawn[i];
         // ----------- STUDENT CODE BEGIN ------------
-        var vel = base_vel;
+        var vel = base_vel * Math.random();
 
         setElement( idx, velocities, vel );
         // ----------- STUDENT CODE END ------------

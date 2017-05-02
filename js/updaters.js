@@ -302,10 +302,6 @@ ClothUpdater.prototype.calcHooke = function ( p, q ) {
     var D = new THREE.Vector3( );
     D.subVectors( q, p );
     D.divideScalar( dist );
-    // console.log("p", p);
-    // console.log("q", q);
-    // console.log("dist", dist);
-    // console.log("D", D);
 
     var hookeForce = new THREE.Vector3();
     hookeForce = D.multiplyScalar( k_s * ( dist - rest_len ) );
